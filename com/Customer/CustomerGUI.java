@@ -1,13 +1,10 @@
 package com.Customer;
 
-import com.Customer.CustomerDatabase;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 import java.io.*;
-import java.text.*;
 
 /***********************************************************************
  * GUI front end for lab10 - A customer database
@@ -50,7 +47,6 @@ public class CustomerGUI extends JFrame  implements ActionListener{
         gui.setTitle("Customer Database");
         gui.pack();
         gui.setVisible(true);
-
     }
 
     /*********************************************************************
@@ -144,7 +140,10 @@ public class CustomerGUI extends JFrame  implements ActionListener{
     private void displayCustomers(ArrayList <Customer> list){
         resultsArea.setText("");
         for(Customer c : list){
-            resultsArea.append("\n" + c.toString());
+            //resultsArea.append("\n" + c.toString());
+            // Its easier to read this way, probably best to edit the toString() to this format so that
+            // its cleaner to use just toString() rather than the below
+            resultsArea.append(c.getFirstName() + ", " + c.getLastName() + ", " + c.getEmail() + "\n");
         }
         resultsArea.append ("\nNumber of Customers: " + list.size());
     }

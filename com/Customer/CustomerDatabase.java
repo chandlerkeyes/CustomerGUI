@@ -1,10 +1,11 @@
 package com.Customer;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class CustomerDatabase {
     // FIX ME: define your private ArrayList of customers here.
@@ -12,9 +13,14 @@ public class CustomerDatabase {
 
     public CustomerDatabase() {
         customerList = new ArrayList<Customer>();
-
     }
 
+    /**
+     * Find a particular customer based on the first and last name
+     * @param firstName search for
+     * @param lastName to search
+     * @return
+     */
     public Customer findCustomer(String firstName, String lastName) {
         // FIX ME:  iterate through your ArrayList of customers and return the
         // one Customer whose firstName and lastName match the input parameters, or
@@ -26,39 +32,48 @@ public class CustomerDatabase {
         }
         return null;
     }
+
+    /**
+     * Find a customer based on the email domain
+     * @param domain to search for
+     * @return
+     */
     public ArrayList<Customer> findCustomersWithSameEmailDomain(String domain) {
-        // FIX ME:  iterate through your ArrayList of customers and return all those whose
-        // have the same domain.  For example, if domain is @google, you should return an
-        // ArrayList of all the Customers that contain @google in the email
-        ArrayList<Customer> list = new ArrayList<Customer>();
-        for (Customer x: customerList) {
-            if (x.getEmail().contains(domain)) {
-                list.add(x);
-            }
-        }
+        // Replaced this with a stream of the collection to make the code cleaner
+        ArrayList<Customer> list = (ArrayList<Customer>) customerList.stream().filter(s -> s.getEmail().contains(domain)).collect(Collectors.toList());
         return list;
     }
-    public ArrayList<Customer> getDB() {
-        // FIX ME:  return the ArrayList of customers.
-        // ONE line of code
-        return customerList;
 
+    /**
+     * Gets all the customers in the customers list
+     * @return
+     */
+    public ArrayList<Customer> getDB() {
+        return customerList;
     }
 
+    /**
+     * Gets the total count of customer in the database
+     * @return
+     */
     public int getNumberCustomers () {
         // FIX ME:  return the number of customers in the
         // ArrayList - ONE line of code
         return customerList.size();
     }
 
+    /**
+     * Reads the customer data file and add its to the arraylist for later use
+     * @param filename to look at to retrieve information
+     */
     public void readCustomerData(String filename)  {
 
         // Read the full set of data from a text file
-        try{
+        try {
 
             // open the text file and use a Scanner to read the text
-            FileInputStream fileByteStream = new FileInputStream("src/" + filename);
-            Scanner scnr = new Scanner(fileByteStream);
+            // Changed this into one line rather than 2
+            Scanner scnr = new Scanner(new File(filename));
             scnr.useDelimiter("[,\r\n]+");
 
             // keep reading as long as there is more data
@@ -76,9 +91,9 @@ public class CustomerDatabase {
                 customerList.add(c);
 
             }
-            fileByteStream.close();
+            scnr.close();
         }
-        catch(IOException e) {
+        catch(FileNotFoundException e) {
             System.out.println("Failed to read the data file: " + filename);
         }
     }
@@ -110,12 +125,10 @@ public class CustomerDatabase {
         System.out.println("\nFinding all customers who have a google email account" +
                 "\n=======================================================");
         ArrayList<Customer> domainCustomers =
-                customers.findCustomersWithSameEmailDomain("@google") ;
+                customers.findCustomersWithSameEmailDomain("@deviantart") ;
         System.out.println("Found " + domainCustomers.size() + " records total:");
-
-        for(Customer c : domainCustomers) {
-            System.out.println(c);
-        }
+        // Used a lambda expression again to make cleaner
+        domainCustomers.forEach(s -> System.out.println(s));
 
 
     }
